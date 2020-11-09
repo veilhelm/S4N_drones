@@ -32,8 +32,12 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === paths.ROUTES_PATH && method === 'post') {
-    const cardinalOrders = await processTextDocsAsInputs(req, res);
-    console.log(cardinalOrders);
+    try {
+      const cardinalOrders = await processTextDocsAsInputs(req);
+      cardinalOrders.forEach((setOfOrders) =>
+        droneController.makeSetOfDeliveries(setOfOrders)
+      );
+    } catch (error) {}
   }
 });
 
