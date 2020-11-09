@@ -1,0 +1,5 @@
+the number of orders exceed the drone capacity
+the dron will prevent any execution until the error is fixed
+(0, 3) dirección norte
+(1, 4) dirección oriente
+(3, 4) dirección oriente

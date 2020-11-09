@@ -1,5 +1,9 @@
 const EventEmiter = require('events');
 const Drone = require('../models/drones.model');
+const {
+  logDeliveryErrors,
+  logDeliveries,
+} = require('../subscribers/createOutputDocs');
 const { valueIsInRange } = require('../utils/mathOperators');
 
 class DroneController extends EventEmiter {
@@ -26,8 +30,8 @@ class DroneController extends EventEmiter {
     }
   };
 
-  makeDelivery = async (drone, path) => {
-    path.forEach((move) => {
+  makeDelivery = async (drone, path, index) => {
+    path.forEach((move, index) => {
       if (Object.keys(move)[0] === 'y') drone.location['y'] += move['y'];
       if (Object.keys(move)[0] === 'x') drone.location['x'] += move['x'];
     });
@@ -37,12 +41,14 @@ class DroneController extends EventEmiter {
     ) {
       return this.emit('deliveryError', {
         serialNumber: drone.serialNumber,
-        message: 'the address that you are tryng to reach is out of range',
+        message: `the address at line ${index} is out of range`,
       });
     }
-    return this.emit('successfulDelivery', {
+
+    await logDeliveries({
       serialNumber: drone.serialNumber,
       location: drone.location,
+      direction: this.calcFinalDirectionAfterMoves(path[path.length - 1]),
     });
   };
 
@@ -59,16 +65,20 @@ class DroneController extends EventEmiter {
         message: 'the number of orders exceed the drone capacity',
       });
     }
-    orders.paths.forEach(async (path) => this.makeDelivery(drone, path));
+    orders.paths.forEach(
+      async (path, index) => await this.makeDelivery(drone, path, index)
+    );
   };
+
+  calcFinalDirectionAfterMoves(lastMove) {
+    if (lastMove['x'] > 0) return 'oriente';
+    if (lastMove['x'] < 0) return 'occidente';
+    if (lastMove['y'] > 0) return 'norte';
+    if (lastMove['y'] < 0) return 'sur';
+  }
 }
 
 const droneController = new DroneController();
 droneController.on('droneCreated', () => console.log('a drone was created'));
-droneController.on('deliveryError', (error) =>
-  console.log(error.serialNumber, error.message)
-);
-droneController.on('successfulDelivery', (data) =>
-  console.log(data.serialNumber, data.location)
-);
+droneController.on('deliveryError', logDeliveryErrors);
 module.exports = droneController;

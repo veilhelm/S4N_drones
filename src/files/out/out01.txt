@@ -1,0 +1,10 @@
+
+(3, 2) dirección oriente
+(6, 7) dirección norte
+(5, 9) dirección occidente
+(3, 2) dirección oriente
+(6, 7) dirección norte
+(5, 9) dirección occidente
+(3, 2) dirección oriente
+(6, 7) dirección norte
+(5, 9) dirección occidente
