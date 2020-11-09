@@ -1,0 +1,14 @@
+{
+  "restaurants": [
+    {
+      "name": "su corrientazo a domicilio",
+      "perimeterOfService": 10,
+      "numberOfDrones": 20,
+      "initialStateOfDrones": {
+        "location": { "x": 0, "y": 0 },
+        "direction": 90,
+        "availableLoad": 3
+      }
+    }
+  ]
+}
