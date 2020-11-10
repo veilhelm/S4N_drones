@@ -1,0 +1,2 @@
+the instruction is invalid at line 2, letter 5
+the dron will prevent any execution until the error is fixed
