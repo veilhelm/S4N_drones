@@ -31,7 +31,7 @@ class DroneController extends EventEmiter {
   };
 
   makeDelivery = async (drone, path, index) => {
-    path.forEach((move, index) => {
+    path.forEach((move) => {
       if (Object.keys(move)[0] === 'y') drone.location['y'] += move['y'];
       if (Object.keys(move)[0] === 'x') drone.location['x'] += move['x'];
     });

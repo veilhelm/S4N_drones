@@ -3,6 +3,7 @@ const Pos = require('../models/restaurantPOS.model');
 
 class RestaurantController extends EventEmiter {
   createRestaurant = async (parameters = {}) => {
+    this.emit('restaurantCreated');
     return await new Pos(parameters);
   };
 }
