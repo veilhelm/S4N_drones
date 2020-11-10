@@ -45,10 +45,17 @@ class DroneController extends EventEmiter {
       });
     }
 
+    const newDirection = this.calcFinalDirectionAfterMoves(
+      path[path.length - 1]
+    );
     await logDeliveries({
       serialNumber: drone.serialNumber,
       location: drone.location,
-      direction: this.calcFinalDirectionAfterMoves(path[path.length - 1]),
+      direction: newDirection.string,
+    });
+    await drone.updateOne({
+      location: drone.location,
+      direction: newDirection.number,
     });
   };
 
@@ -70,12 +77,21 @@ class DroneController extends EventEmiter {
     );
   };
 
-  calcFinalDirectionAfterMoves(lastMove) {
-    if (lastMove['x'] > 0) return 'oriente';
-    if (lastMove['x'] < 0) return 'occidente';
-    if (lastMove['y'] > 0) return 'norte';
-    if (lastMove['y'] < 0) return 'sur';
-  }
+  calcFinalDirectionAfterMoves = (lastMove) => {
+    if (lastMove['x'] > 0) return { string: 'oriente', number: 0 };
+    if (lastMove['x'] < 0) return { string: 'occidente', number: 180 };
+    if (lastMove['y'] > 0) return { string: 'norte', number: 90 };
+    if (lastMove['y'] < 0) return { string: 'sur', number: 270 };
+  };
+
+  returnHome = async (droneId = {}) => {
+    const drones = await Drone.find(droneId);
+    Promise.all(
+      drones.map(async (drone) => {
+        await drone.updateOne({ location: { x: 0, y: 0 }, direction: 90 });
+      })
+    );
+  };
 }
 
 const droneController = new DroneController();

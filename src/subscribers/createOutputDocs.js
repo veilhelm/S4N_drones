@@ -1,11 +1,12 @@
 const fs = require('fs');
 const util = require('util');
 
-const fsPromises = fs.promises;
-
 const logDeliveries = async (data) => {
   const fileName = `./src/files/out/out${data.serialNumber}.txt`;
   const logData = `\r\n(${data.location['x']}, ${data.location['y']}) dirección ${data.direction}`;
+  if (!fs.existsSync(fileName)) {
+    fs.writeFileSync(fileName, '==reporte de entregas==');
+  }
   fs.appendFileSync(fileName, logData, (err) => {
     console.log(err);
   });
