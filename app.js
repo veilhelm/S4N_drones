@@ -7,7 +7,6 @@ const fs = require('fs');
 const { paths } = require('./src/utils/constants');
 const configController = require('./src/controllers/config.controller');
 const droneController = require('./src/controllers/drones.controller');
-const port = 4000;
 const processTextDocsAsInputs = require('./src/adapters/deliveryRoutes.adapter');
 const {
   clearDirectory,
